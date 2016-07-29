@@ -1,0 +1,38 @@
+.complete {
+  text-decoration: line-through;
+  color: grey;
+}
+.todoCheckbox {
+  display: inline-block;
+  margin: auto 10px;
+}
+.todocomponent {
+  max-width: 400px;
+  margin: 0 auto 10px;
+  /*border: 1px solid black;*/
+}
+.todoButton {
+  border: none;
+  background-color: transparent;
+  color: #af5b5e;
+  padding: auto 10px;
+  float: right;
+}
+.todoRow {
+  max-width: 350px;
+  margin: 10px auto;
+}
+.todoHeader {
+
+}
+.todoBody {
+
+}
+
+.inputChange {
+  border: none;
+  border-bottom: 1px dotted #222;
+}
+.onSubmit {
+  display: inline-block;
+}
