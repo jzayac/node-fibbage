@@ -4,4 +4,6 @@ require.extensions['.css'] = () => {
   return;
 };
 
+global.__CLIENT__ = false;
+
 require('./server.js');
