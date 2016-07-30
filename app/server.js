@@ -55,18 +55,12 @@ app.get('/*', (req, res) => {
   }
   // match()
   // console.log(match);
-  console.log(req.originalUrl);
 
   const memoryHistory = createHistory(req.originalUrl);
-  console.log('som tu');
   const store = createStore(memoryHistory);
-  console.log('som tu');
   const history = syncHistoryWithStore(memoryHistory, store);
 
-  console.log('som tu');
   match({ history, routes: routes(store), location: req.originalUrl }, (err, redirectLocation, renderProps) => {
-    // console.log('===========');
-    // console.log(renderProps);
     function getReduxPromise () {
       let { query, params } = renderProps;
       let comp = renderProps.components[renderProps.components.length - 1].WrappedComponent;
@@ -76,8 +70,6 @@ app.get('/*', (req, res) => {
 
       return promise;
     }
-    // console.log('===================');
-    // console.log(routes);
     // TODO: reddirect
     if (redirectLocation) {
       res.redirect(301, redirectLocation.pathname + redirectLocation.search)
@@ -99,7 +91,6 @@ app.get('/*', (req, res) => {
     //     <ReduxAsyncConnect {...renderProps} />
     //   </Provider>
     // );
-    console.log(RouterContext);
     // const component = (
     //   <Provider store={store} >
     //     <RouterContext {...renderProps} />
