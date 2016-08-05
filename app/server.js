@@ -49,12 +49,23 @@ proxy.on('error', (error, req, res) => {
   res.end(JSON.stringify(json));
 });
 
-app.get('/*', (req, res) => {
-  if (!conf.isProduction) {
-
+const compiler = webpack(config);
+const middleware = webpackMiddleware(compiler, {
+  publicpath: config.output.publicPath,
+  contentbase: 'src',
+  stats: {
+    colors: true,
+    hash: false,
+    timings: true,
+    chunks: false,
+    chunkmodules: false,
+    modules: false
   }
-  // match()
-  // console.log(match);
+});
+app.use(middleware);
+app.use(webpackHotMiddleware(compiler));
+
+app.get('/*', (req, res) => {
 
   const memoryHistory = createHistory(req.originalUrl);
   const store = createStore(memoryHistory);
@@ -78,117 +89,40 @@ app.get('/*', (req, res) => {
       return res.status(500).end('Internal server error');
     }
 
-    // if (!renderProps) {
-    //   return res.status(404).end('Not Found');
-    // }
-    // res.status(200).json({'asdas': 'ok'});
     if (!renderProps) {
       return res.status(404).end('Not Found');
     }
-    // res.status(200).json({'asdas': 'ok'});
-    // const component = (
-    //   <Provider store={store} >
-    //     <ReduxAsyncConnect {...renderProps} />
-    //   </Provider>
-    // );
-    // const component = (
-    //   <Provider store={store} >
-    //     <RouterContext {...renderProps} />
-    //   </Provider>
-    // );
 
-    // app.use()
-    // const finalState = store.getState();
-    // // console.log('========================');
-    // const html = renderToString(component);
-    // // console.log('do pice23');
-    // res.status(200).end(renderFullPage(html, finalState));
+    const component = (
+      <Provider store={store} >
+        <RouterContext {...renderProps} />
+      </Provider>
+    );
 
-    if (!conf.isProduction) {
-      const compiler = webpack(config);
-      const middleware = webpackMiddleware(compiler, {
-        publicPath: config.output.publicPath,
-        contentBase: 'src',
-        stats: {
-          colors: true,
-          hash: false,
-          timings: true,
-          chunks: false,
-          chunkModules: false,
-          modules: false
-        }
-      });
-      //
-      app.use(middleware);
-      app.use(webpackHotMiddleware(compiler));
-      app.get('/', function response(req, res) {
-        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '../static/index.html')));
-        res.end();
-      });
-    } else {
-      app.use(express.static(path.join(__dirname, '../static/dist')));
-// app.get('*', function response(req, res) {
-     res.sendFile(path.join(__dirname, '../static/dist/index.html'));
+    const finalState = JSON.stringify( store.getState() );
+    const html = renderToString(component);
+    res.status(200).end(renderFullPage(html, finalState));
 
-    }
-    // res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '../static/index.html')));
-    // res.end();
   });
-  // app.use(express.static(path.join(__dirname, '../static/dist')));
-  // // app.get('*', function response(req, res) {
-  //   res.sendFile(path.join(__dirname, '../static/dist/index.html'));
-  // });
 });
-// if (isDeveloping) {
-//   const compiler = webpack(config);
-//   const middleware = webpackMiddleware(compiler, {
-//     publicPath: config.output.publicPath,
-//     contentBase: 'src',
-//     stats: {
-//       colors: true,
-//       hash: false,
-//       timings: true,
-//       chunks: false,
-//       chunkModules: false,
-//       modules: false
-//     }
-//   });
-//
-//   app.use(middleware);
-//   app.use(webpackHotMiddleware(compiler));
-//   app.get('/', function response(req, res) {
-//     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, '../static/index.html')));
-//     res.end();
-//   });
-//   // TODO: render page from server
-//   // app.get('*', function (req, res) {
-//   //   res.status(301).redirect('/');
-//   // });
-// } else {
-//   app.use(express.static(path.join(__dirname, '../static/dist')));
-//   app.get('*', function response(req, res) {
-//     res.sendFile(path.join(__dirname, '../static/dist/index.html'));
-//   });
-// }
 
 function renderFullPage(html, initialState) {
   return `
     <!doctype html>
     <html lang="en">
       <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-        <title>React Redux Socket.io Chat</title>
+        <title>fibbage like game</title>
       </head>
       <body>
-        <container id="react">${html}</container>
+        <container id="root">${html}</container>
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
         </script>
-        <script src="/dist/bundle.js"></script>
+        <script src="/main.js"></script>
       </body>
     </html>
   `

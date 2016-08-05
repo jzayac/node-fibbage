@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrent --kill-others \"node app/server\" \"node api/api\"",
-    "start-dev-server": "nodemon app/start",
+    "start-dev-server": "node app/start",
     "start-dev-api": "nodemon api/api",
     "start-dev-api-debug": "node-debug api/api",
     "eslint": "eslint -c .eslintrc app",

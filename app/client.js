@@ -34,7 +34,7 @@ function initSocket() {
   return socket;
 }
 
-global.socket = initSocket();
+// global.socket = initSocket();
 
 const routes = (
   <Router history={browserHistory}>
