@@ -31,21 +31,21 @@ export default class LoginForm extends Component {
   render() {
     return (
       <div className={styles.loginForm}>
-          <form
-            className="login-form form-inline"
-            onSubmit={(e) => { e.preventDefault(); this.handleUserLogin(); }}
-          >
-            <h2>Please sign in </h2>
-            <input
-              type="text" ref="nick" placeholder="enter nick name"
-              className={`${styles.widthFull} form-control`}
-            />
-            <Button
-              className="btn btn-lg btn-primary btn-block"
-              onClick={ () => this.handleUserLogin() }
-            ><i className="fa fa-sign-in" />{' '}Log In
-            </Button>
-          </form>
+        <form
+          className="login-form form-inline"
+          onSubmit={(e) => { e.preventDefault(); this.handleUserLogin(); }}
+        >
+          <h2>enter your nick name</h2>
+          <input
+            type="text" ref="nick" placeholder="enter nick name"
+            className={`${styles.widthFull} form-control`}
+          />
+          <Button
+            className="btn btn-lg btn-primary btn-block"
+            onClick={() => this.handleUserLogin()}
+          ><i className="fa fa-sign-in" />{' '}Log In
+          </Button>
+        </form>
       </div>
     );
   }

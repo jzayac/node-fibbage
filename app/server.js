@@ -11,7 +11,6 @@ import conf from '../config/config';
 import { Provider } from 'react-redux';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
 
 import createStore from './redux/store';
 import createHistory from 'react-router/lib/createMemoryHistory';
@@ -19,17 +18,17 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { RouterContext, match } from 'react-router';
 import routes from './routes';
 
-const isDeveloping = process.env.NODE_ENV !== 'production';
+// const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = conf.clinetPort;
 const app = express();
 
 const proxy = httpProxy.createProxyServer({
   target: `http://${conf.apiHost}:${conf.apiPort}`,
-  ws: true
+  ws: true,
 });
 
 app.use('/ws', (req, res) => {
-  proxy.web(req, res, {target: `http://${conf.apiHost}:${conf.apiPort}`});
+  proxy.web(req, res, { target: `http://${conf.apiHost}:${conf.apiPort}` });
 });
 
 app.use('/api', (req, res) => {
@@ -38,14 +37,13 @@ app.use('/api', (req, res) => {
 
 app.use(favicon(path.join(__dirname, '../static/favicon.ico')));
 proxy.on('error', (error, req, res) => {
-  var json;
   if (error.code !== 'ECONNRESET') {
     console.error('proxy error', error);
   }
   if (!res.headersSent) {
-    res.writeHead(500, {'content-type': 'application/json'});
+    res.writeHead(500, { 'content-type': 'application/json' });
   }
-  json = {error: 'server communication error', reason: error.message};
+  const json = { error: 'server communication error', reason: error.message };
   res.end(JSON.stringify(json));
 });
 
@@ -59,8 +57,8 @@ const middleware = webpackMiddleware(compiler, {
     timings: true,
     chunks: false,
     chunkmodules: false,
-    modules: false
-  }
+    modules: false,
+  },
 });
 app.use(middleware);
 app.use(webpackHotMiddleware(compiler));
@@ -75,7 +73,7 @@ app.use((req, res) => {
 
     // TODO: reddirect
     if (redirectLocation) {
-      res.redirect(301, redirectLocation.pathname + redirectLocation.search)
+      res.redirect(301, redirectLocation.pathname + redirectLocation.search);
     }
     if (err) {
       return res.status(500).end('Internal server error');
@@ -91,10 +89,9 @@ app.use((req, res) => {
       </Provider>
     );
 
-    const finalState = JSON.stringify( store.getState() );
+    const finalState = JSON.stringify(store.getState());
     const html = renderToString(component);
     res.status(200).end(renderFullPage(html, finalState));
-
   });
 });
 
@@ -117,8 +114,7 @@ function renderFullPage(html, initialState) {
         </script>
         <script src="/main.js"></script>
       </body>
-    </html>
-  `
+    </html>`;
 }
 
 

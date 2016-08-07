@@ -7,6 +7,7 @@ const userRouter = require('./routes/user');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const SocketIo = require('socket.io');
 
 const app = express();
 app.use(morgan('dev'));
