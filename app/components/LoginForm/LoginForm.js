@@ -29,10 +29,6 @@ export default class LoginForm extends Component {
   }
 
   render() {
-    // console.log('=======');
-    // console.log(store);
-    // console.log(this.state);
-    // console.log('RENDER');
     return (
       <div className={styles.loginForm}>
           <form
