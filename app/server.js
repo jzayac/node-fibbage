@@ -65,22 +65,14 @@ const middleware = webpackMiddleware(compiler, {
 app.use(middleware);
 app.use(webpackHotMiddleware(compiler));
 
-app.get('/*', (req, res) => {
-
+// app.get('*', (req, res) => {
+app.use((req, res) => {
   const memoryHistory = createHistory(req.originalUrl);
   const store = createStore(memoryHistory);
   const history = syncHistoryWithStore(memoryHistory, store);
 
   match({ history, routes: routes(store), location: req.originalUrl }, (err, redirectLocation, renderProps) => {
-    function getReduxPromise () {
-      let { query, params } = renderProps;
-      let comp = renderProps.components[renderProps.components.length - 1].WrappedComponent;
-      let promise = comp.fetchData ?
-        comp.fetchData({ query, params, store, history }) :
-        Promise.resolve();
 
-      return promise;
-    }
     // TODO: reddirect
     if (redirectLocation) {
       res.redirect(301, redirectLocation.pathname + redirectLocation.search)
@@ -107,6 +99,7 @@ app.get('/*', (req, res) => {
 });
 
 function renderFullPage(html, initialState) {
+          // <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   return `
     <!doctype html>
     <html lang="en">

@@ -2,7 +2,7 @@
 
 var path = require('path');
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+// var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var StatsPlugin = require('stats-webpack-plugin');
 
@@ -19,11 +19,11 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
-    new HtmlWebpackPlugin({
-      template: 'static/index.html',
-      inject: 'body',
-      filename: 'index.html'
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: 'static/index.html',
+    //   inject: 'body',
+    //   filename: 'index.html'
+    // }),
     new ExtractTextPlugin('[name]-[hash].min.css'),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
