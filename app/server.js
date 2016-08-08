@@ -17,13 +17,10 @@ import createHistory from 'react-router/lib/createMemoryHistory';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { RouterContext, match } from 'react-router';
 import routes from './routes';
-import bodyParser from 'body-parser';
 
 // const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = conf.clientPort;
 const app = express();
-
-app.use(bodyParser.json());
 
 const proxy = httpProxy.createProxyServer({
   target: `http://${conf.apiHost}:${conf.apiPort}`,
@@ -35,7 +32,7 @@ app.use('/ws', (req, res) => {
 });
 
 app.use('/api', (req, res) => {
-  proxy.web(req, res);
+  proxy.web(req, res, { target: `http://${conf.apiHost}:${conf.apiPort}` });
 });
 
 app.use(favicon(path.join(__dirname, '../static/favicon.ico')));

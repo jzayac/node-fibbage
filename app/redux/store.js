@@ -2,11 +2,10 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import middlewareHelper from './middleware/middleware';
 import reducer from './modules/reducer';
 import { persistState } from 'redux-devtools';
-import { routerMiddleware } from 'react-router-redux'
+import { routerMiddleware } from 'react-router-redux';
 
 
-export default ( history, initialState = {}) => {
-
+export default (history, initialState = {}) => {
   const routerMidd = routerMiddleware(history);
 
   const middleware = [middlewareHelper, routerMidd];
@@ -15,7 +14,6 @@ export default ( history, initialState = {}) => {
   const isDeveloping = process.env.NODE_ENV !== 'production';
   let finalCreateStore;
   if (isDeveloping && __CLIENT__) {
-    console.log('klient');
     finalCreateStore = compose(
       applyMiddleware(...middleware),
       DevTools.instrument(),
@@ -28,4 +26,4 @@ export default ( history, initialState = {}) => {
   const store = finalCreateStore(reducer, initialState);
 
   return store;
-}
+};

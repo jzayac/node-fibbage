@@ -24,7 +24,6 @@ export default class App extends Component {
   }
 
   render() {
-    // const { user } = this.props;
     return (
       <div className={styles.app}>
         <div className={`${styles.content} container`} >

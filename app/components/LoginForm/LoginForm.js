@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Button, Alert } from 'react-bootstrap';
 import styles from './LoginForm.css';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+// import { Link } from 'react-router';
 import * as authActions from '../../redux/modules/auth';
 
 @connect(
@@ -16,7 +16,7 @@ export default class LoginForm extends Component {
   static propTypes = {
     user: PropTypes.object,
     login: PropTypes.func.isRequired,
-    loginError: PropTypes.string,
+    loginError: PropTypes.array,
     // authDismissError: PropTypes.func,
     // loggingIn: PropTypes.bool,
   }
@@ -24,16 +24,21 @@ export default class LoginForm extends Component {
     const user = this.refs.nick;
     console.log(user.value);
     this.props.login(user.value);
-
-    // socket.emit('user/login', {
-    //   user: user.value
-    // });
     user.value = '';
   }
 
   render() {
+    const { user, loginError } = this.props;
     return (
       <div className={styles.loginForm}>
+        {user &&
+          <h4>hello {user.name}</h4>
+        }
+        {loginError && loginError.map(e =>
+          <Alert bsStyle="danger" >
+            {e}
+          </Alert>
+        )}
         <form
           className="login-form form-inline"
           onSubmit={(e) => { e.preventDefault(); this.handleUserLogin(); }}

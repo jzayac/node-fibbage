@@ -19,10 +19,10 @@ app.use(session({
   saveUninitialized: false,
   cookie: { maxAge: 60000 }
 }));
-app.use(bodyParser.urlencoded({
-  extended: true,
-}));
-// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({
+//   extended: true,
+// }));
+app.use(bodyParser.json());
 
 const server = new http.Server(app);
 const io = new SocketIo(server);
@@ -47,10 +47,6 @@ app.use((req, res) => {
   console.log(req.originalUrl);
   res.status(404).json({ status: 'not found'});
 });
-
-// app.listen(config.apiPort, () => {
-//     console.log('Api listening on port ' + config.apiPort);
-// });
 
 if (config.apiPort) {
   const runnable = app.listen(config.apiPort, (err) => {
