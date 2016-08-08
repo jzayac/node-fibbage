@@ -1,4 +1,5 @@
 import superagent from 'superagent';
+import config from '../../../config/config';
 // import querystring from 'querystring';
 
 export default function middleware({ getState }) {
@@ -28,7 +29,7 @@ export default function middleware({ getState }) {
       });
 
       return new Promise((resolve, reject) => {
-        const url = `http://localhost:3000/api${params.url}`;
+        const url = `http://localhost:${config.clientPort}/api${params.url}`;
         const req =
           superagent[params.method](url);
         if (params.data) {

@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 
 router.post('/login', (req, res) => {
   const name = req.body.name;
-
+  // TODO check duplicate user name
   if (!req.session || name) {
     req.session.user = {
       name: name,
@@ -23,6 +23,16 @@ router.post('/login', (req, res) => {
     data: req.body,
     session: req.session,
   });
+});
+
+router.get('/loadauth', (req, res) => {
+  if (!req.session) {
+    return res.status(403).json({});
+  } else {
+    return res.status(200).json({
+      data: req.session.user
+    });
+  }
 });
 
 router.get('/logout', (req, res) => {

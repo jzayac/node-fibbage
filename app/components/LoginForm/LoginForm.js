@@ -5,26 +5,29 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import * as authActions from '../../redux/modules/auth';
 
-// @connect(
-//   state => ({
-//     user: state.auth.user,
-//     loginError: state.auth.loginError,
-//     loggingIn: state.auth.loggingIn,
-//   }),
-//   authActions)
+@connect(
+  state => ({
+    user: state.auth.user,
+    loginError: state.auth.loginError,
+    loggingIn: state.auth.loggingIn,
+  }),
+  authActions)
 export default class LoginForm extends Component {
   static propTypes = {
     user: PropTypes.object,
-    login: PropTypes.func,
+    login: PropTypes.func.isRequired,
     loginError: PropTypes.string,
-    authDismissError: PropTypes.func,
-    loggingIn: PropTypes.bool,
+    // authDismissError: PropTypes.func,
+    // loggingIn: PropTypes.bool,
   }
   handleUserLogin = () => {
     const user = this.refs.nick;
-    socket.emit('user/login', {
-      user: user.value
-    });
+    console.log(user.value);
+    this.props.login(user.value);
+
+    // socket.emit('user/login', {
+    //   user: user.value
+    // });
     user.value = '';
   }
 

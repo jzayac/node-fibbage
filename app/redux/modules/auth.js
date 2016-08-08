@@ -101,15 +101,14 @@ export function isLoaded(globalState) {
   return globalState.auth && globalState.auth.loaded;
 }
 
-export function login(email, password) {
+export function login(name) {
   return {
     types: [AUTH_LOGIN, AUTH_LOGIN_SUCCESS, AUTH_LOGIN_FAIL],
     params: {
       method: 'post',
-      url: '/login',
+      url: '/user/login',
       data: {
-        email,
-        password,
+        name,
       },
     },
   };

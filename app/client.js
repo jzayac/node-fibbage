@@ -7,7 +7,7 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import DevTools from './containers/DevTools/DevTools';
 import createStore from './redux/store';
 import io from 'socket.io-client';
-import createBrowserHistory from 'history/lib/createBrowserHistory'
+import createBrowserHistory from 'history/lib/createBrowserHistory';
 
 // TODO basename
 // const browserHistory = useRouterHistory(createBrowserHistory)({
@@ -16,10 +16,11 @@ import createBrowserHistory from 'history/lib/createBrowserHistory'
 const browserHistory = useRouterHistory(createBrowserHistory)();
 
 const store = createStore(browserHistory, window.__INITIAL_STATE__);
+// TODO: history implementation
 const history = syncHistoryWithStore(browserHistory, store);
 
 function initSocket() {
-  const socket = io('', {path: '/ws'});
+  const socket = io('', { path: '/ws' });
 
   socket.on('news', (data) => {
     console.log(data);
@@ -30,14 +31,14 @@ function initSocket() {
     console.log(data);
   });
 
-  socket.emit('user/login', {user: 'name'});
+  socket.emit('user/login', { user: 'name' });
   return socket;
 }
 
-// global.socket = initSocket();
+global.socket = initSocket();
 
 const routes = (
-  <Router history={browserHistory}>
+  <Router history={history}>
     {getRoutes(store)}
   </Router>
 );

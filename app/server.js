@@ -17,10 +17,13 @@ import createHistory from 'react-router/lib/createMemoryHistory';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { RouterContext, match } from 'react-router';
 import routes from './routes';
+import bodyParser from 'body-parser';
 
 // const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = conf.clinetPort;
+const port = conf.clientPort;
 const app = express();
+
+app.use(bodyParser.json());
 
 const proxy = httpProxy.createProxyServer({
   target: `http://${conf.apiHost}:${conf.apiPort}`,
@@ -28,7 +31,7 @@ const proxy = httpProxy.createProxyServer({
 });
 
 app.use('/ws', (req, res) => {
-  proxy.web(req, res, { target: `http://${conf.apiHost}:${conf.apiPort}` });
+  proxy.web(req, res, { target: `http://${conf.apiHost}:${conf.apiPort}/ws` });
 });
 
 app.use('/api', (req, res) => {
@@ -63,6 +66,28 @@ const middleware = webpackMiddleware(compiler, {
 app.use(middleware);
 app.use(webpackHotMiddleware(compiler));
 
+function renderFullPage(html, initialState) {
+          // <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  return `
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        <title>fibbage like game</title>
+      </head>
+      <body>
+        <container id="root">${html}</container>
+        <script>
+          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
+        </script>
+        <script src="/main.js"></script>
+      </body>
+    </html>`;
+}
+
 // app.get('*', (req, res) => {
 app.use((req, res) => {
   const memoryHistory = createHistory(req.originalUrl);
@@ -95,30 +120,8 @@ app.use((req, res) => {
   });
 });
 
-function renderFullPage(html, initialState) {
-          // <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-  return `
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-        <link rel="icon" href="./favicon.ico" type="image/x-icon" />
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-        <title>fibbage like game</title>
-      </head>
-      <body>
-        <container id="root">${html}</container>
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-        </script>
-        <script src="/main.js"></script>
-      </body>
-    </html>`;
-}
 
-
-app.listen(port, function onStart(err) {
+app.listen(port, (err) => {
   if (err) {
     console.log(err);
   }
