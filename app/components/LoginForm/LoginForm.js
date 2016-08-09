@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Button, Alert } from 'react-bootstrap';
 import styles from './LoginForm.css';
 import { connect } from 'react-redux';
-// import { Link } from 'react-router';
 import * as authActions from '../../redux/modules/auth';
 
 @connect(
@@ -29,6 +28,12 @@ export default class LoginForm extends Component {
 
   render() {
     const { user, loginError } = this.props;
+    console.log(this);
+    if (user) {
+      console.log('user exists');
+      // TODO reddirect
+      // Route.browserHistory.push('/somepath');
+    }
     return (
       <div className={styles.loginForm}>
         {user &&

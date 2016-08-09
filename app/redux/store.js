@@ -3,6 +3,7 @@ import middlewareHelper from './middleware/middleware';
 import reducer from './modules/reducer';
 import { persistState } from 'redux-devtools';
 import { routerMiddleware } from 'react-router-redux';
+import { loadAuth } from './modules/auth';
 
 
 export default (history, initialState = {}) => {
@@ -24,6 +25,9 @@ export default (history, initialState = {}) => {
   }
 
   const store = finalCreateStore(reducer, initialState);
+
+  // check if user is already logged
+  store.dispatch(loadAuth());
 
   return store;
 };

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
-import { isLoaded as isAuthLoaded, loadAuth } from './redux/modules/auth';
+// import { isLoaded as isAuthLoaded, loadAuth } from './redux/modules/auth';
 import {
   Main,
   App,
+  Board,
   NotFound } from './containers';
 
 
@@ -28,6 +29,7 @@ export default (store) => {
   return (
     <Route path="/" component={App}>
       <IndexRoute component={Main} />
+      <Route path="board" component={Board} />
       <Route path="*" component={NotFound} status={404} />
     </Route>
   );

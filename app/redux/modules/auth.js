@@ -119,7 +119,7 @@ export function loadAuth() {
     types: [AUTH_LOAD, AUTH_LOAD_SUCCESS, AUTH_LOAD_FAIL],
     params: {
       method: 'get',
-      url: '/loadauth',
+      url: '/user/loadauth',
     },
   };
 }
