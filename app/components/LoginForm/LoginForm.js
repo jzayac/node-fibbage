@@ -3,6 +3,7 @@ import { Button, Alert } from 'react-bootstrap';
 import styles from './LoginForm.css';
 import { connect } from 'react-redux';
 import * as authActions from '../../redux/modules/auth';
+import { Link } from 'react-router';
 
 @connect(
   state => ({
@@ -21,23 +22,31 @@ export default class LoginForm extends Component {
   }
   handleUserLogin = () => {
     const user = this.refs.nick;
-    console.log(user.value);
+    // console.log(user.value);
     this.props.login(user.value);
     user.value = '';
   }
 
   render() {
     const { user, loginError } = this.props;
-    console.log(this);
+    // console.log(this);
     if (user) {
-      console.log('user exists');
       // TODO reddirect
       // Route.browserHistory.push('/somepath');
+      return (
+        <div>
+          <h4>hello {user.name}</h4>
+          <Link to="/board" activeClassName="active">link to board</Link>
+        </div>
+      );
     }
     return (
       <div className={styles.loginForm}>
         {user &&
-          <h4>hello {user.name}</h4>
+          <div>
+            <h4>hello {user.name}</h4>
+            <Link to={`/board`} activeClassName="active">link to board</Link>
+          </div>
         }
         {loginError && loginError.map(e =>
           <Alert bsStyle="danger" >
