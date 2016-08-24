@@ -135,29 +135,3 @@ export function logout() {
     // promise: (client) => client.get('/logout')
   };
 }
-
-export function signUp(email, password) {
-  return {
-    types: [AUTH_SIGNUP, AUTH_SIGNUP_SUCCESS, AUTH_SIGNUP_FAIL],
-    params: {
-      method: 'post',
-      url: '/signup',
-      data: {
-        email,
-        password,
-      },
-    },
-  };
-}
-
-// export function signUpValidationError() {
-//   return {
-//     type:
-//   }
-// }
-
-export function authDismissError() {
-  return {
-    type: AUTH_DISMISS_ERROR,
-  };
-}

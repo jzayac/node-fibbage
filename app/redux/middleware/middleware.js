@@ -34,7 +34,7 @@ export default function middleware({ getState }) {
           superagent[params.method](url);
         if (params.data) {
           req.send(params.data);
-          req.type('application/json')
+          req.type('application/json');
           // req.type('form');
         }
         req.end((err, res) => {

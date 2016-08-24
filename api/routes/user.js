@@ -32,8 +32,11 @@ router.post('/login', (req, res) => {
 
 router.get('/loadauth', (req, res) => {
   if (!req.session) {
+    console.log('empty');
     return res.status(200).json({});
   } else {
+    console.log('not empty');
+    console.log(req.session.user);
     return res.status(200).json({
       data: req.session.user,
     });

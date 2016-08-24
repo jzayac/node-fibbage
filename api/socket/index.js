@@ -6,7 +6,7 @@ const rooms = [];
 module.exports = function(io) {
   io.on('connection', (socket) => {
     // console.log("Query: ", socket.handshake.data);
-    socket.join('Test');
+    // socket.join('Test');
 
     socket.on('question', (channelID) => {
       socket.broadcast.to(channelID).emit('new bc message', msg);
@@ -16,6 +16,16 @@ module.exports = function(io) {
       user[userData.name] = userData;
     });
 
+    socket.on('create channel', (channel) => {
+      console.log('create channel');
+      console.log(channel);
+      rooms.push(channel);
+      socket.broadcast.emit('new channel', channel);
+    });
+
+    socket.on('join room', (channelID) => {
+      socket.join(channelID);
+    });
     socket.on('set store', (data) => {
       user.data = data;
     });
@@ -41,10 +51,10 @@ module.exports = function(io) {
     });
 
     socket.on('msg', (data) => {
-      data.id = messageIndex;
-      messageBuffer[messageIndex % bufferSize] = data;
-      messageIndex++;
-      io.emit('msg', data);
+      // data.id = messageIndex;
+      // messageBuffer[messageIndex % bufferSize] = data;
+      // messageIndex++;
+      socket.emit('msg', data);
     });
     socket.on('disconnect', function() {
       delete user[socket.id];

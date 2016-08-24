@@ -1,4 +1,11 @@
-export default (io) => {
+import * as channelActions from '../redux/modules/channel';
+
+export default (io, dispatch) => {
+  io.on('new channel', (channel) => {
+    console.log('do pice channel novy');
+    console.log(channel);
+    dispatch(channelActions.createRoom(channel));
+  });
   io.on('news', (data) => {
     console.log(data);
     io.emit('my other event', { my: 'data from client' });
