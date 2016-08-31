@@ -4,6 +4,7 @@ const express = require('express');
 const config = require('../config/config');
 const morgan = require('morgan');
 const userRouter = require('./routes/user');
+const roomRouter = require('./routes/room');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -35,14 +36,8 @@ app.get('/' , (req, res) => {
   });
 });
 
-// app.post('/teste', (req, res) => {
-//   res.status(200).json({
-//     data: req.body,
-//     session: req.session,
-//   })
-// });
-
 app.use('/user', userRouter);
+app.use('/room', roomRouter);
 
 app.use((req, res) => {
   console.log(req.originalUrl);

@@ -29,7 +29,7 @@ export default function middleware({ getState }) {
       });
 
       return new Promise((resolve, reject) => {
-        const url = `http://localhost:${config.clientPort}/api${params.url}`;
+        const url = `http://${config.clientHost}:${config.clientPort}/api${params.url}`;
         const req =
           superagent[params.method](url);
         if (params.data) {

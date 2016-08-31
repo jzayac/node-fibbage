@@ -1,7 +1,7 @@
 'use strict'
 
-const user = {};
-const rooms = [];
+const user = require('../model/user');
+const rooms = require('../model/room');
 
 module.exports = function(io) {
   io.on('connection', (socket) => {
@@ -16,15 +16,24 @@ module.exports = function(io) {
       user[userData.name] = userData;
     });
 
-    socket.on('create channel', (channel) => {
-      console.log('create channel');
-      console.log(channel);
-      rooms.push(channel);
-      socket.broadcast.emit('new channel', channel);
+    socket.on('create room', (room) => {
+      console.log('create room');
+      console.log(room);
+      rooms.push({
+        name: room,
+        players: [],
+      });
+      socket.broadcast.emit('new room', rooms);
+      // socket.emit('new room', rooms);
     });
 
-    socket.on('join room', (channelID) => {
+    socket.on('join room', (channelID, user) => {
+
       socket.join(channelID);
+      // socket.broadcast.emit('player join' )
+    });
+    socket.on('leave room', (channelID, user) => {
+
     });
     socket.on('set store', (data) => {
       user.data = data;

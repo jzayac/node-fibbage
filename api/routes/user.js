@@ -1,10 +1,9 @@
 'use strict'
 
 const express = require('express');
-// const _ = require('lodash');
 let router = express.Router();
 const validate = require('../../utils/validation');
-const users = [];
+const users = require('../model/user');
 
 
 router.get('/', (req, res) => {
@@ -20,10 +19,11 @@ router.post('/login', (req, res) => {
   req.session.user = {
     name: name,
   };
-  users.push = {
+
+  users.push({
     name: name,
     points: 0,
-  };
+  });
 
   res.status(200).json({
     data: req.body,

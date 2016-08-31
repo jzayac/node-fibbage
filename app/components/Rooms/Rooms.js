@@ -1,73 +1,116 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import styles from './Rooms.css';
 import { connect } from 'react-redux';
-import * as channelActions from '../../redux/modules/channel';
+import api from '../../api';
+import validate from '../../../utils/validation';
 // import { Link } from 'react-router';
 
 @connect(
   state => ({
-    channels: state.channel.channels,
-    users: state.channel.users,
     user: state.auth.user.name,
   }),
-  channelActions,
 )
 export default class Rooms extends Component {
   static propTypes = {
     socket: PropTypes.object.isRequired,
-    channels: PropTypes.array.isRequired,
-    users: PropTypes.object.isRequired,
     user: PropTypes.string.isRequired,
-    createRoom: PropTypes.func.isRequired,
-    joinRoom: PropTypes.func.isRequired,
   }
 
   constructor(props, context) {
     super(props, context);
     this.state = {
+      rooms: [],
       newRoom: false,
+      error: undefined,
     };
   }
 
-  createNewRoom = (e) => {
+  componentWillMount() {
+    this.getRooms();
+    const { socket } = this.props;
+    socket.on('new room', (rooms) => {
+      this.setState({
+        rooms,
+      });
+    });
+  }
+
+  async getRooms() {
+    const res = await api({
+      method: 'get',
+      url: '/room',
+    }).then(
+      (data) => data,
+      (err) => err,
+    );
+    this.setState({
+      error: res.error || undefined,
+      rooms: res.data || this.state.rooms,
+    });
+  }
+
+  newRoomHandler = (e) => {
     e.preventDefault();
-    // console.log(this.refs.roomName.value);
-    const channelName = this.refs.roomName.value;
-    this.props.createRoom(channelName);
-    this.props.socket.emit('create channel', channelName);
-    this.setState({ newRoom: false });
+    const roomName = this.refs.roomName.value;
+    const error = validate(roomName, 'room name')
+      .isRequired()
+      .isString()
+      .unique(this.state.rooms, 'name')
+      .exec();
+
+    const cloneRooms = this.state.rooms.slice();
+
+    if (!error) {
+      cloneRooms.push({
+        name: roomName,
+        players: [],
+      });
+      this.props.socket.emit('create room', roomName);
+    }
+    this.setState({
+      error: error || undefined,
+      rooms: cloneRooms,
+      newRoom: error ? true : false,
+    });
   }
 
   joinRoom = (e, name) => {
     e.preventDefault();
-    this.props.joinRoom(name, this.props.user);
+    console.log('join room');
+    // this.props.joinRoom(name, this.props.user);
     // socket emit user join
   }
 
   render() {
-    const { channels } = this.props;
-    const { newRoom } = this.state;
-    const activeRooms = channels.length;
+    const { newRoom, rooms, error } = this.state;
+    console.log('render');
+    const activeRooms = rooms.length;
     return (
       <div>
+        {error && error.map((e, key) =>
+          <Alert key={key} bsStyle="danger" >
+            {e}
+          </Alert>
+        )}
         <Button
             className="btn btn-primary"
             onClick={() => this.setState({ newRoom: !newRoom })}
         ><i className="fa fa-sign-in" />{newRoom ? 'close' : 'new room'}
         </Button>
         {newRoom && (
-          <form onSubmit={(e) => {this.createNewRoom(e)}}>
+          <form onSubmit={(e) => {this.newRoomHandler(e)}}>
             <input
               type="text" ref="roomName" placeholder="room name"
               className={`${styles.widthFull} form-control`}
             />
           </form>
         )}
-        {channels && channels.map((name, key) =>
+        {rooms && rooms.map((room, key) =>
           <div key={key}>
             <p key={key}>
-              <a href="#" key={key} onClick={(e) => this.joinRoom(e, name)}>{name}</a>
+              <a href="#" key={key} onClick={(e) => this.joinRoom(e, room.name)}>{room.name}</a>
+              <span>{' '}{room.players.length}</span>
             </p>
           </div>
         )}
