@@ -23,6 +23,7 @@ router.post('/login', (req, res) => {
   users.push({
     name: name,
     points: 0,
+    room: undefined,
   });
 
   res.status(200).json({

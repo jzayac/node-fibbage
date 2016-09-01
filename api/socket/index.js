@@ -13,7 +13,12 @@ module.exports = function(io) {
     });
 
     socket.on('authorization', (userData) => {
+      console.log('AUTH');
+      console.log(userData);
+      console.log(user);
       user[userData.name] = userData;
+      console.log('AFTER');
+      console.log(user);
     });
 
     socket.on('create room', (room) => {

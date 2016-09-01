@@ -1,11 +1,7 @@
 // import * as channelActions from '../redux/modules/channel';
 
-export default (io, dispatch) => {
-  // io.on('new channel', (channel) => {
-    // dispatch(channelActions.createRoom(channel));
-  // });
+export default (io) => {
   io.on('news', (data) => {
-    console.log(data);
     io.emit('my other event', { my: 'data from client' });
   });
 
@@ -21,5 +17,5 @@ export default (io, dispatch) => {
   //   io.join(channel.name);
   // });
 
-  io.emit('user/login', { user: 'name' });
+  // io.emit('user/login', { user: 'name' });
 };

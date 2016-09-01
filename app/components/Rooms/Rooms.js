@@ -4,17 +4,22 @@ import styles from './Rooms.css';
 import { connect } from 'react-redux';
 import api from '../../api';
 import validate from '../../../utils/validation';
+import { push } from 'react-router-redux';
+import { roomInfo } from '../../redux/modules/room';
 // import { Link } from 'react-router';
 
 @connect(
   state => ({
     user: state.auth.user.name,
+    // room:
   }),
-)
+  { roomInfo, pushState: push })
 export default class Rooms extends Component {
   static propTypes = {
     socket: PropTypes.object.isRequired,
     user: PropTypes.string.isRequired,
+    roomInfo: PropTypes.func.isRequired,
+    pushState: PropTypes.func.isRequired,
   }
 
   constructor(props, context) {
@@ -78,6 +83,18 @@ export default class Rooms extends Component {
   joinRoom = (e, name) => {
     e.preventDefault();
     console.log('join room');
+    this.props.roomInfo(name);
+    // this.props.roomInfo(name).then((data, err) => {
+    //   console.log(data);
+    //   console.log(err);
+    //   if (!err) {
+    //     this.props.pushState(`/room/${name}`);
+    //   } else {
+    //     this.setState({
+    //       error: err,
+    //     })
+    //   }
+    // })
     // this.props.joinRoom(name, this.props.user);
     // socket emit user join
   }
@@ -109,7 +126,7 @@ export default class Rooms extends Component {
         {rooms && rooms.map((room, key) =>
           <div key={key}>
             <p key={key}>
-              <a href="#" key={key} onClick={(e) => this.joinRoom(e, room.name)}>{room.name}</a>
+              <a href={`room/${room.name}`} key={key} onClick={(e) => this.joinRoom(e, room.name)}>{room.name}</a>
               <span>{' '}{room.players.length}</span>
             </p>
           </div>

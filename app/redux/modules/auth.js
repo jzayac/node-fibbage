@@ -17,6 +17,7 @@ const AUTH_SIGNUP_FAIL = 'AUTH_SIGNUP_FAIL';
 const AUTH_DISMISS_ERROR = 'AUTH_DISMISS_ERROR';
 
 const initState = {
+  loaded: false,
   loader: false,
   user: null,
   loginError: null,
@@ -34,6 +35,7 @@ export default function reducer(state = initState, action) {
     case AUTH_LOGIN_SUCCESS:
       return {
         ...state,
+        loaded: true,
         loggingIn: false,
         user: action.data,
         loginError: null,
@@ -42,6 +44,7 @@ export default function reducer(state = initState, action) {
     case AUTH_LOGIN_FAIL:
       return {
         ...state,
+        loaded: false,
         loggingIn: false,
         user: null,
         loginError: action.error,
