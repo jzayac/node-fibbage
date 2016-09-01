@@ -1,7 +1,8 @@
 'use strict'
 
-const user = require('../model/user');
+const users = require('../model/user');
 const rooms = require('../model/room');
+const _ = require('lodash');
 
 module.exports = function(io) {
   io.on('connection', (socket) => {
@@ -12,18 +13,11 @@ module.exports = function(io) {
       socket.broadcast.to(channelID).emit('new bc message', msg);
     });
 
-    socket.on('authorization', (userData) => {
-      console.log('AUTH');
-      console.log(userData);
-      console.log(user);
-      user[userData.name] = userData;
-      console.log('AFTER');
-      console.log(user);
-    });
+    // socket.on('authorization', (userData) => {
+      // user[userData.name] = userData;
+    // });
 
     socket.on('create room', (room) => {
-      console.log('create room');
-      console.log(room);
       rooms.push({
         name: room,
         players: [],
@@ -32,20 +26,31 @@ module.exports = function(io) {
       // socket.emit('new room', rooms);
     });
 
-    socket.on('join room', (channelID, user) => {
-
-      socket.join(channelID);
+    socket.on('join room', (channelID, userName) => {
+      // oooh i need to override code
+      const uid = _.findIndex(users, (o) => {
+        return o.name === userName;
+      });
+      const rid = _.findIndex(rooms, (o) => {
+        return o.name === channelID;
+      });
+      if (uid !== -1 && rid !== -1) {
+        rooms[rid].players.push(userName);
+        users[uid].room = userName;
+        socket.join(channelID);
+        socket.broadcast.to(channelID).emit('player join room', userName);
+      }
       // socket.broadcast.emit('player join' )
     });
     socket.on('leave room', (channelID, user) => {
 
     });
-    socket.on('set store', (data) => {
-      user.data = data;
-    });
+    // socket.on('set store', (data) => {
+    //   users.data = data;
+    // });
     socket.on('get store', () => {
-      console.log(user);
-      socket.emit('data', user);
+      console.log(users);
+      socket.emit('data', users);
     });
 
     socket.on('join channel', (channel) => {
@@ -71,7 +76,7 @@ module.exports = function(io) {
       socket.emit('msg', data);
     });
     socket.on('disconnect', function() {
-      delete user[socket.id];
+      // delete user[socket.id];
     });
   });
 }

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-// import { Rooms } from '../../components';
+import { WaitOthers } from '../../components';
 
 
 @connect(
@@ -10,21 +10,19 @@ import Helmet from 'react-helmet';
     room: state.room.data,
   })
 )
-export default class Board extends Component {
+export default class Room extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
     params: PropTypes.object.isRequired,
+    socket: PropTypes.object.isRequired,
   }
 
   render() {
-    const { user, params } = this.props;
-    console.log('----------------id-------------');
-    console.log(params);
+    const { user, params, socket } = this.props;
     return (
       <div>
-        <Helmet title="room" />
-        <h2>ROOM</h2>
-        <p>{user.name}</p>
+        <Helmet title={`room: ${params.roomId}`} />
+        <WaitOthers socket={socket} roomName={params.roomId} />
       </div>
     );
   }

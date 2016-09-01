@@ -93,7 +93,7 @@ app.use((req, res) => {
 
   match({ history, routes: routes(store), location: req.originalUrl }, (err, redirectLocation, renderProps) => {
 
-    // TODO: reddirect
+    // TODO: redirect
     if (redirectLocation) {
       res.redirect(301, redirectLocation.pathname + redirectLocation.search);
     }

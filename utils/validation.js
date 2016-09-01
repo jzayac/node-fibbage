@@ -45,36 +45,4 @@ function validate(value, name) {
   return that;
 }
 
-// function Validation(value, name) {
-//   this.value = value;
-//   this.name = name;
-//   this.error = [];
-// }
-//
-// Validation.prototype.isRequired = function() {
-//   if (isEmpty(this.value)) {
-//     this.error.push(this.name + ' is required');
-//   }
-//   return this;
-// }
-//
-// Validation.prototype.isString = function() {
-//   if (!(/^([a-zA-Z0-9 _-]+)$/).test(this.value)) {
-//     this.error.push(this.name + ' not valid');
-//   }
-//   return this;
-// }
-//
-// Validation.prototype.valid = function() {
-//   return this.error.length === 0;
-// }
-//
-// Validation.prototype.getError = function() {
-//   return this.error;
-// }
-//
-// Validation.prototype.exec = function() {
-//   return this.error.length !== 0 ? this.error : undefined;
-// }
-
 module.exports = validate;

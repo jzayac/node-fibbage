@@ -6,7 +6,7 @@ import api from '../../api';
 import validate from '../../../utils/validation';
 import { push } from 'react-router-redux';
 import { roomInfo } from '../../redux/modules/room';
-// import { Link } from 'react-router';
+import { Link } from 'react-router';
 
 @connect(
   state => ({
@@ -39,6 +39,11 @@ export default class Rooms extends Component {
         rooms,
       });
     });
+  }
+
+  componentWillUnmount() {
+    const { socket } = this.props;
+    socket.removeAllListeners('new room');
   }
 
   async getRooms() {
@@ -76,32 +81,12 @@ export default class Rooms extends Component {
     this.setState({
       error: error || undefined,
       rooms: cloneRooms,
-      newRoom: error ? true : false,
+      newRoom: error || false,
     });
-  }
-
-  joinRoom = (e, name) => {
-    e.preventDefault();
-    console.log('join room');
-    this.props.roomInfo(name);
-    // this.props.roomInfo(name).then((data, err) => {
-    //   console.log(data);
-    //   console.log(err);
-    //   if (!err) {
-    //     this.props.pushState(`/room/${name}`);
-    //   } else {
-    //     this.setState({
-    //       error: err,
-    //     })
-    //   }
-    // })
-    // this.props.joinRoom(name, this.props.user);
-    // socket emit user join
   }
 
   render() {
     const { newRoom, rooms, error } = this.state;
-    console.log('render');
     const activeRooms = rooms.length;
     return (
       <div>
@@ -111,12 +96,12 @@ export default class Rooms extends Component {
           </Alert>
         )}
         <Button
-            className="btn btn-primary"
-            onClick={() => this.setState({ newRoom: !newRoom })}
+          className="btn btn-primary"
+          onClick={() => this.setState({ newRoom: !newRoom })}
         ><i className="fa fa-sign-in" />{newRoom ? 'close' : 'new room'}
         </Button>
         {newRoom && (
-          <form onSubmit={(e) => {this.newRoomHandler(e)}}>
+          <form onSubmit={(e) => { this.newRoomHandler(e); }}>
             <input
               type="text" ref="roomName" placeholder="room name"
               className={`${styles.widthFull} form-control`}
@@ -126,7 +111,7 @@ export default class Rooms extends Component {
         {rooms && rooms.map((room, key) =>
           <div key={key}>
             <p key={key}>
-              <a href={`room/${room.name}`} key={key} onClick={(e) => this.joinRoom(e, room.name)}>{room.name}</a>
+              <Link to={`/board/${room.name}`} activeClassName="active">{room.name}</Link>
               <span>{' '}{room.players.length}</span>
             </p>
           </div>

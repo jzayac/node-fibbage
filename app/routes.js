@@ -29,14 +29,11 @@ export default (store) => {
 
   const roomExists = (nextState, replace, cb) => {
     function chceckRoom() {
-      const { room: { data } } = store.getState();
-      if (data) {
-        console.log('data exists');
-        console.log(data);
+      const { room: { name } } = store.getState();
+      if (name) {
         cb();
       } else {
-        console.log('not exists');
-        // TODO: reddirect to board
+        // TODO: redirect to board
         // replace('/not-found');
         replace(null, '/board');
       }
@@ -44,18 +41,21 @@ export default (store) => {
 
     if (!isRoomLoaded(store.getState())) {
       const roomId = store.getState().routing.locationBeforeTransitions.pathname;
-      store.dispatch(roomInfo(roomId.substring(6))).then(chceckRoom);
+      store.dispatch(roomInfo(roomId.substring(7))).then(chceckRoom);
     } else {
       chceckRoom();
     }
-  }
+  };
 
+        // <Route onEnter={roomExists} path="room/:roomId" component={Room} />
+      // <Route path="/room/:roomId" component={Room} />
+      // <Route path="board/:roomId" component={Room} />
   return (
     <Route path="/" component={App}>
       <IndexRoute component={Main} />
       <Route onEnter={requireLogin}>
         <Route path="board" component={Board} />
-        <Route onEnter={roomExists} path="room/:roomId" component={Room} />
+        <Route onEnter={roomExists} path="board/:roomId" component={Room} />
       </Route>
       <Route path="*" component={NotFound} status={404} />
     </Route>

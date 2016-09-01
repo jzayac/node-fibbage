@@ -39,7 +39,7 @@ export default class App extends Component {
     return (
       <div className={styles.app}>
         <div className={`${styles.content} container`} >
-          {React.cloneElement(this.props.children, { socket: socket })}
+          {React.cloneElement(this.props.children, { socket })}
         </div>
       </div>
     );

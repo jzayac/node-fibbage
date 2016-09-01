@@ -17,11 +17,9 @@ export default function api(params) {
             error: res.body.error,
           });
         }
-        // } else {
         return reject({
           error: err,
         });
-        // }
       } else {
         return resolve({
           data: res.body.data,

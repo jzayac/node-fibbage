@@ -2,10 +2,13 @@ const ROOM_INFO = 'ROOM_INFO';
 const ROOM_INFO_SUCCESS = 'ROOM_INFO_SUCCESS';
 const ROOM_INFO_FAIL = 'ROOM_INFO_FAIL';
 
+const ROOM_JOIN = 'ROOM_JOIN';
+
+const ROOM_LEAVE = 'ROOM_LEAVE';
+
 const initState = {
   loaded: false,
   loader: false,
-  data: null,
   error: null,
 };
 
@@ -21,15 +24,28 @@ export default function reducer(state = initState, action) {
         ...state,
         loaded: true,
         loader: false,
-        data: action.data,
+        name: action.data.name,
+        players: action.data.players,
       };
     case ROOM_INFO_FAIL:
       return {
         ...state,
         loader: false,
         loaded: false,
-        data: null,
         error: action.error,
+      };
+    case ROOM_JOIN:
+      return {
+        ...state,
+        players: [
+          ...state.players,
+          action.name,
+        ],
+      };
+    case ROOM_LEAVE:
+      // TODO:
+      return {
+        ...state,
       };
     default:
       return state;
@@ -37,17 +53,29 @@ export default function reducer(state = initState, action) {
 }
 
 export function isLoaded(globalState) {
-  console.log('is lodaed room');
   return globalState.room && globalState.room.loader;
 }
 
 export function roomInfo(id) {
-  console.log('call kokotina ');
   return {
     types: [ROOM_INFO, ROOM_INFO_SUCCESS, ROOM_INFO_FAIL],
     params: {
       method: 'get',
       url: `/room/id/${id}`,
     },
+  };
+}
+
+export function joinRoom(name) {
+  return {
+    type: ROOM_JOIN,
+    name,
+  };
+}
+
+export function leaveRoom(name) {
+  return {
+    type: ROOM_LEAVE,
+    name,
   };
 }

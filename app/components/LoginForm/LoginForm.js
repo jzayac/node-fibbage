@@ -38,12 +38,12 @@ export default class LoginForm extends Component {
     const { user, loginError } = this.props;
     // console.log(this);
     if (user) {
-      // TODO reddirect
+      // TODO redirect
       // Route.browserHistory.push('/somepath');
       return (
         <div>
           <h4>hello {user.name}</h4>
-          <Link to="/board" activeClassName="active">link to board</Link>
+          <Link to="/board" activeClassName="active">select room</Link>
         </div>
       );
     }
@@ -52,7 +52,7 @@ export default class LoginForm extends Component {
         {user &&
           <div>
             <h4>hello {user.name}</h4>
-            <Link to={`/board`} activeClassName="active">link to board</Link>
+            <Link to={'/board'} activeClassName="active">link to board</Link>
           </div>
         }
         {loginError && loginError.map(e =>
