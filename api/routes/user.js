@@ -4,6 +4,7 @@ const express = require('express');
 let router = express.Router();
 const validate = require('../../utils/validation');
 const users = require('../model/user');
+const _ = require('lodash');
 
 
 router.get('/', (req, res) => {
@@ -36,10 +37,17 @@ router.get('/loadauth', (req, res) => {
     console.log('empty');
     return res.status(200).json({});
   } else {
+    const uid = _.findIndex(users, (o) => {
+      return o.name === req.session.user;
+    });
     console.log('not empty');
     console.log(req.session.user);
+    console.log(users[uid]);
+    // return res.status(200).json({
+    //   data: req.session.user,
+    // });
     return res.status(200).json({
-      data: req.session.user,
+      data: users[uid],
     });
   }
 });

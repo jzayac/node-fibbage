@@ -4,7 +4,11 @@ const ROOM_INFO_FAIL = 'ROOM_INFO_FAIL';
 
 const ROOM_JOIN = 'ROOM_JOIN';
 
+const ROOM_PLAYER_READY = 'ROOM_PLAYER_READY';
+
 const ROOM_LEAVE = 'ROOM_LEAVE';
+
+const ROOM_UPDATE = 'ROOM_UPDATE';
 
 const initState = {
   loaded: false,
@@ -26,6 +30,9 @@ export default function reducer(state = initState, action) {
         loader: false,
         name: action.data.name,
         players: action.data.players,
+        ready: action.data.ready,
+        playing: action.data.playing,
+        starting: action.data.starting,
       };
     case ROOM_INFO_FAIL:
       return {
@@ -39,6 +46,22 @@ export default function reducer(state = initState, action) {
         ...state,
         players: [
           ...state.players,
+          action.name,
+        ],
+      };
+    case ROOM_UPDATE:
+      return {
+        ...state,
+        players: action.data.players,
+        ready: action.data.ready,
+        playing: action.data.playing,
+        starting: action.data.starting,
+      };
+    case ROOM_PLAYER_READY:
+      return {
+        ...state,
+        ready: [
+          ...state.ready,
           action.name,
         ],
       };
@@ -73,9 +96,24 @@ export function joinRoom(name) {
   };
 }
 
+export function playerReady(name) {
+  console.log('ROOM_PLAYER_READY');
+  return {
+    type: ROOM_PLAYER_READY,
+    name,
+  };
+}
+
 export function leaveRoom(name) {
   return {
     type: ROOM_LEAVE,
     name,
+  };
+}
+
+export function updateRoom(update) {
+  return {
+    type: ROOM_UPDATE,
+    data: update,
   };
 }

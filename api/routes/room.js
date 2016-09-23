@@ -7,6 +7,7 @@ const rooms = require('../model/room');
 const validate = require('../../utils/validation');
 const _ = require('lodash');
 const isAuthenticated = require('../utils/isAuthenticated');
+const question = require('../model/question');
 
 
 router.get('/', isAuthenticated, (req, res) => {
@@ -40,8 +41,10 @@ router.post('/', isAuthenticated, (req, res) => {
   }
   rooms.push({
     name: room,
-    players: {},
+    players: [],
+    ready: [],
   });
+  console.log(rooms);
   res.status(200).json({
     status: 'ok',
     data: rooms,

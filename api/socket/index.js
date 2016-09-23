@@ -2,25 +2,50 @@
 
 const users = require('../model/user');
 const rooms = require('../model/room');
+const question = require('../model/question');
 const _ = require('lodash');
 
+console.log(question.getQuestion(0, 'final'));
+// console.log(question.getCategory('final'));
+console.log(question.getAnswer(0));
+
 module.exports = function(io) {
+//   // sending to sender-client only
+// socket.emit('message', "this is a test");
+//
+// // sending to all clients, include sender
+// io.emit('message', "this is a test");
+//
+// // sending to all clients except sender
+// socket.broadcast.emit('message', "this is a test");
+//
+// // sending to all clients in 'game' room(channel) except sender
+// socket.broadcast.to('game').emit('message', 'nice game');
+//
+// // sending to all clients in 'game' room(channel), include sender
+// io.in('game').emit('message', 'cool game');
+//
+// // sending to sender client, only if they are in 'game' room(channel)
+// socket.to('game').emit('message', 'enjoy the game');
+//
+// // sending to all clients in namespace 'myNamespace', include sender
+// io.of('myNamespace').emit('message', 'gg');
+//
+// // sending to individual socketid
+// socket.broadcast.to(socketid).emit('message', 'for your eyes only');
   io.on('connection', (socket) => {
-    // console.log("Query: ", socket.handshake.data);
-    // socket.join('Test');
 
     socket.on('question', (channelID) => {
       socket.broadcast.to(channelID).emit('new bc message', msg);
     });
 
-    // socket.on('authorization', (userData) => {
-      // user[userData.name] = userData;
-    // });
-
     socket.on('create room', (room) => {
       rooms.push({
         name: room,
         players: [],
+        ready: [],
+        playing: false,
+        starting: false,
       });
       socket.broadcast.emit('new room', rooms);
       // socket.emit('new room', rooms);
@@ -38,16 +63,30 @@ module.exports = function(io) {
         rooms[rid].players.push(userName);
         users[uid].room = userName;
         socket.join(channelID);
-        socket.broadcast.to(channelID).emit('player join room', userName);
+        socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
       }
       // socket.broadcast.emit('player join' )
     });
     socket.on('leave room', (channelID, user) => {
 
     });
-    // socket.on('set store', (data) => {
-    //   users.data = data;
-    // });
+
+    socket.on('ready to play', channelID => {
+      const rid = _.findIndex(rooms, (o) => {
+        return o.name === channelID;
+      });
+      if (rid !== -1) {
+        rooms[rid].starting = true;
+        socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
+        setTimeout(() => {
+          console.log('TIMEOUT ended');
+          rooms[rid].playing = true;
+          // socket.broadcast.to(channelID).emit('start game', rooms[rid]);
+          io.in(channelID).emit('start game', rooms[rid]);
+          // io.broadcast.to(channelID).emit('start game', rooms[rid]);
+        }, 1000);
+      }
+    });
     socket.on('get store', () => {
       console.log(users);
       socket.emit('data', users);
@@ -56,6 +95,24 @@ module.exports = function(io) {
     socket.on('join channel', (channel) => {
       socket.join(channel.name);
     });
+
+    socket.on('player ready', (name, channelID) => {
+      const rid = _.findIndex(rooms, (o) => {
+        return o.name === channelID;
+      });
+
+      if (rid !== -1) {
+        rooms[rid].ready.push(name);
+        socket.join(channelID);
+        // if (rooms[rid].players.length === rooms[rid].ready.length ) {
+        //   console.log('all players ready');
+        //   // rooms[rid].playing = true;
+        //   // socket.broadcast.to(channelID).emit('all players ready', {});
+        // }
+        socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
+      }
+    });
+    // socket.on('new player ready', )
 
     // socket.emit('news', {msg: `'Hello World!' from server`});
 

@@ -1,4 +1,4 @@
 'use strict'
-const room = []
+const room = [];
 
 module.exports = room;
