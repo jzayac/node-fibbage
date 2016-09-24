@@ -36,7 +36,7 @@ export default class Room extends Component {
   }
 
   render() {
-    const { user, params, socket, room } = this.props;
+    const { params, socket, room } = this.props;
     return (
       <div>
         <Helmet title={`room: ${params.roomId}`} />

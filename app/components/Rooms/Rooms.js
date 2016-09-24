@@ -87,6 +87,8 @@ export default class Rooms extends Component {
 
   render() {
     const { newRoom, rooms, error } = this.state;
+    console.log('==========rooms=========');
+    console.log(rooms);
     const activeRooms = rooms.length;
     return (
       <div>
@@ -108,14 +110,16 @@ export default class Rooms extends Component {
             />
           </form>
         )}
-        {rooms && rooms.map((room, key) =>
+        {rooms && rooms.map((room, key) => (
           <div key={key}>
-            <p key={key}>
-              <Link to={`/board/${room.name}`} activeClassName="active">{room.name}</Link>
-              <span>{' '}{room.players.length}</span>
-            </p>
+            {!room.playing && (
+              <p key={key}>
+                <Link to={`/board/${room.name}`} activeClassName="active">{room.name}</Link>
+                <span>{' '}{room.players.length}</span>
+              </p>
+            )}
           </div>
-        )}
+        ))}
         <span>active rooms {activeRooms}</span>
       </div>
     );

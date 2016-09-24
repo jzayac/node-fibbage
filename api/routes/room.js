@@ -7,7 +7,6 @@ const rooms = require('../model/room');
 const validate = require('../../utils/validation');
 const _ = require('lodash');
 const isAuthenticated = require('../utils/isAuthenticated');
-const question = require('../model/question');
 
 
 router.get('/', isAuthenticated, (req, res) => {

@@ -30,8 +30,11 @@ export default class App extends Component {
         });
         global.socket = socket;
       }
-
-      this.props.pushState('/board');
+      if (nextProps.user.room) {
+        this.props.pushState(`/board/${nextProps.user.room}`);
+      } else {
+        this.props.pushState('/board');
+      }
     }
   }
 

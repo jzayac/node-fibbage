@@ -5,9 +5,6 @@ const rooms = require('../model/room');
 const question = require('../model/question');
 const _ = require('lodash');
 
-console.log(question.getQuestion(0, 'final'));
-// console.log(question.getCategory('final'));
-console.log(question.getAnswer(0));
 
 module.exports = function(io) {
 //   // sending to sender-client only
@@ -46,6 +43,7 @@ module.exports = function(io) {
         ready: [],
         playing: false,
         starting: false,
+        round: [],
       });
       socket.broadcast.emit('new room', rooms);
       // socket.emit('new room', rooms);
@@ -60,8 +58,8 @@ module.exports = function(io) {
         return o.name === channelID;
       });
       if (uid !== -1 && rid !== -1) {
-        rooms[rid].players.push(userName);
-        users[uid].room = userName;
+        rooms[rid].players.push({ name: userName });
+        users[uid].room = channelID;
         socket.join(channelID);
         socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
       }
@@ -70,6 +68,7 @@ module.exports = function(io) {
     socket.on('leave room', (channelID, user) => {
 
     });
+
 
     socket.on('ready to play', channelID => {
       const rid = _.findIndex(rooms, (o) => {
@@ -92,6 +91,11 @@ module.exports = function(io) {
       socket.emit('data', users);
     });
 
+    socket.on('get category', () => {
+      const randomCategory = question.getRandomCategory(10);
+      socket.emit('choose category update', randomCategory);
+    });
+
     socket.on('join channel', (channel) => {
       socket.join(channel.name);
     });
@@ -103,12 +107,9 @@ module.exports = function(io) {
 
       if (rid !== -1) {
         rooms[rid].ready.push(name);
+        const idx = _.findIndex(rooms[rid].players, (o) => o.name === name );
+        rooms[rid].players[idx].ready = true;
         socket.join(channelID);
-        // if (rooms[rid].players.length === rooms[rid].ready.length ) {
-        //   console.log('all players ready');
-        //   // rooms[rid].playing = true;
-        //   // socket.broadcast.to(channelID).emit('all players ready', {});
-        // }
         socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
       }
     });

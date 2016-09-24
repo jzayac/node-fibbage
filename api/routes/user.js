@@ -33,19 +33,19 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/loadauth', (req, res) => {
-  if (!req.session) {
+  console.log(req.session);
+  if (!req.session.user) {
     console.log('empty');
     return res.status(200).json({});
   } else {
     const uid = _.findIndex(users, (o) => {
-      return o.name === req.session.user;
+      return o.name === req.session.user.name;
     });
     console.log('not empty');
-    console.log(req.session.user);
-    console.log(users[uid]);
-    // return res.status(200).json({
-    //   data: req.session.user,
-    // });
+    // console.log(req.session.user);
+    // console.log(uid);
+    // console.log(users);
+    // console.log(users[uid]);
     return res.status(200).json({
       data: users[uid],
     });

@@ -38,7 +38,15 @@ export default function middleware({ getState }) {
           // req.type('form');
         }
         req.end((err, res) => {
-          if (err || !res.body) {
+          if (err) {
+            if (!res) {
+              return reject({
+                data: {
+                  message: ['connection error', err],
+                },
+              });
+            }
+          // if (err || !res.body) {
             if (res.body && res.body.error) {
               return reject({
                 data: {

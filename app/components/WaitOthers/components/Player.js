@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react' ;
 
 const Player = ({ name, ready, owner }) => {
+  const readyStyles = ready ? { color: 'green' } : {};
   return (
     <div>
-      {name}{ready}{owner}
+      <span style={readyStyles}>{name}{owner}</span>
     </div>
   );
 };

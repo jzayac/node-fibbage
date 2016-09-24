@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 import styles from './WaitOthers.css';
 import * as roomActions from '../../redux/modules/room';
 import Player from './components/Player';
-import _ from 'lodash';
+// import _ from 'lodash';
 
 @connect(
   state => ({
@@ -18,7 +18,7 @@ import _ from 'lodash';
 export default class WaitOthers extends Component {
   static propTypes = {
     socket: PropTypes.object.isRequired,
-    user: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
     // room: PropTypes.object.isRequired,
     joinRoom: PropTypes.func.isRequired,
     playerReady: PropTypes.func.isRequired,
@@ -33,16 +33,12 @@ export default class WaitOthers extends Component {
     const { socket, roomName, user } = this.props;
     if (user.room !== roomName) {
       socket.emit('join room', roomName, user.name);
-      this.props.joinRoom(user.name);
+      this.props.joinRoom({ name: user.name });
     }
     // socket.on('player join room', (player) => {
     //   this.props.joinRoom(player);
     // });
     socket.on('wait for others update', (update) => {
-      // this.
-      // console.log('room update');
-      // console.log(update);
-      // console.log('upda')
       this.props.updateRoom(update);
     });
     // socket.on('new player ready', (player) => {
@@ -82,7 +78,6 @@ export default class WaitOthers extends Component {
   }
   startGameHandler = () => {
     const { socket, roomName } = this.props;
-    console.log('ready to play');
     socket.emit('ready to play', roomName);
     // TODO: implement
   }
@@ -91,13 +86,13 @@ export default class WaitOthers extends Component {
   render() {
     const { roomPlayers, roomPlayersReady, user } = this.props;
     const canPlay = roomPlayers.length >= 1 && roomPlayers.length === roomPlayersReady.length;
-    const isFirst = roomPlayers[0] === user.name;
+    const isFirst = roomPlayers[0] && roomPlayers[0].name === user.name;
     const playerReady = roomPlayersReady.find((name) => name === user.name);
     return (
       <div>
         <h2>more test</h2>
         {roomPlayers.map((player, key) => (
-          <Player key={key} name={player} ready={this.isReady(player)} />
+          <Player key={key} name={player.name} ready={this.isReady(player.name)} />
         ))}
         <Button
           className="btn btn-primary"

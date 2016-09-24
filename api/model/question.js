@@ -44,6 +44,24 @@ function Question() {
     return category[type];
   }
 
+  that.getRandomCategory = (limitParam, typeParam) => {
+    const type = typeParam || 'normal';
+    const limit = limitParam || 10;
+    let limitCategory = [];
+
+    let isNotUnique = true;
+    while (isNotUnique) {
+      for (let i = limitCategory.length; i < limit; i++) {
+        limitCategory.push(category[type][Math.floor(Math.random() * limit) + 1]);
+      }
+      limitCategory = _.sortedUniq(limitCategory);
+      if (limitCategory.length >= limitParam) {
+        isNotUnique = false;
+      }
+    }
+    return limitCategory;
+  }
+
   return that;
 }
 
