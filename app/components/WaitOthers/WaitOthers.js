@@ -19,7 +19,6 @@ export default class WaitOthers extends Component {
   static propTypes = {
     socket: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    // room: PropTypes.object.isRequired,
     joinRoom: PropTypes.func.isRequired,
     playerReady: PropTypes.func.isRequired,
     roomName: PropTypes.string.isRequired,
@@ -82,7 +81,6 @@ export default class WaitOthers extends Component {
     // TODO: implement
   }
 
-// state : save user ready
   render() {
     const { roomPlayers, roomPlayersReady, user } = this.props;
     const canPlay = roomPlayers.length >= 1 && roomPlayers.length === roomPlayersReady.length;

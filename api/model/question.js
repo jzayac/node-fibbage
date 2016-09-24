@@ -25,13 +25,11 @@ function Question() {
 
   that.getAnswer = (id, typeParam) => {
     const type = typeParam || 'normal';
-
     return question[type][id].answer;
   }
 
-  that.suggestions = (id, typeParam) => {
+  that.getSuggestions = (id, typeParam) => {
     const type = typeParam || 'normal';
-
     return question[type][id].suggestions;
   }
 
@@ -42,6 +40,18 @@ function Question() {
   that.getCategory = (typeParam) => {
     const type = typeParam || 'normal';
     return category[type];
+  }
+
+  that.getRandomQuestion = (categoryPaparm, typeParam) => {
+    const type = typeParam || 'normal';
+    let filtred = [];
+    // const category = categoryPaparm || '';
+    if (categoryPaparm) {
+      filtred = _.filter(question[type], (o) => o.category === categoryPaparm );
+    } else {
+      filtred = question[type];
+    }
+    return filtred[Math.floor(Math.random() * filtred.length)];
   }
 
   that.getRandomCategory = (limitParam, typeParam) => {
@@ -55,7 +65,7 @@ function Question() {
         limitCategory.push(category[type][Math.floor(Math.random() * limit) + 1]);
       }
       limitCategory = _.sortedUniq(limitCategory);
-      if (limitCategory.length >= limitParam) {
+      if (limitCategory.length >= limit) {
         isNotUnique = false;
       }
     }

@@ -87,8 +87,6 @@ export default class Rooms extends Component {
 
   render() {
     const { newRoom, rooms, error } = this.state;
-    console.log('==========rooms=========');
-    console.log(rooms);
     const activeRooms = rooms.length;
     return (
       <div>

@@ -11,6 +11,10 @@ const ROOM_LEAVE = 'ROOM_LEAVE';
 const ROOM_UPDATE = 'ROOM_UPDATE';
 const ROOM_UPDATE_FAIL = 'ROOM_UPDATE_FAIL';
 
+const ROOM_QUESTION = 'ROOM_QUESTION';
+const ROOM_QUESTION_SUCCESS = 'ROOM_QUESTION_SUCCESS';
+const ROOM_QUESTION_FAIL = 'ROOM_QUESTION_FAIL';
+
 const initState = {
   loaded: false,
   loader: false,
@@ -100,7 +104,6 @@ export function joinRoom(name) {
 }
 
 export function playerReady(name) {
-  console.log('ROOM_PLAYER_READY');
   return {
     type: ROOM_PLAYER_READY,
     name,

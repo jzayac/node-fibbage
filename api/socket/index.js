@@ -5,6 +5,8 @@ const rooms = require('../model/room');
 const question = require('../model/question');
 const _ = require('lodash');
 
+// console.log(question.getRandomQuestion());
+// console.log(question.getRandomCategory());
 
 module.exports = function(io) {
 //   // sending to sender-client only
@@ -91,9 +93,14 @@ module.exports = function(io) {
       socket.emit('data', users);
     });
 
-    socket.on('get category', () => {
-      const randomCategory = question.getRandomCategory(10);
-      socket.emit('choose category update', randomCategory);
+    // socket.on('get question category', () => {
+    //   const randomCategory = question.getRandomCategory(10);
+    //   socket.emit('choose category update', randomCategory);
+    // });
+
+    socket.on('get question', (channelID, category, type ) => {
+      const randomQuestion = question.getRandomQuestion(category, type);
+      io.in(channelID).emit('choose category update', randomQuestion);
     });
 
     socket.on('join channel', (channel) => {

@@ -5,6 +5,7 @@ const config = require('../config/config');
 const morgan = require('morgan');
 const userRouter = require('./routes/user');
 const roomRouter = require('./routes/room');
+const questionRouter = require('./routes/question');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -38,6 +39,8 @@ app.get('/' , (req, res) => {
 
 app.use('/user', userRouter);
 app.use('/room', roomRouter);
+app.use('/question', questionRouter);
+
 
 app.use((req, res) => {
   console.log(req.originalUrl);

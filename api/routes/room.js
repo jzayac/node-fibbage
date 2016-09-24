@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-let router = express.Router();
+const router = express.Router();
 const rooms = require('../model/room');
 const validate = require('../../utils/validation');
 const _ = require('lodash');
