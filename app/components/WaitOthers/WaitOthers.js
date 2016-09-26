@@ -28,7 +28,8 @@ export default class WaitOthers extends Component {
     updateRoom: PropTypes.func.isRequired,
   }
 
-  componentWillMount() {
+  componentDidMount() {
+  // componentWillMount() {
     const { socket, roomName, user } = this.props;
     if (user.room !== roomName) {
       socket.emit('join room', roomName, user.name);

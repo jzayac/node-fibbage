@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
-import { WaitOthers, ChoseCategory } from '../../components';
+import { WaitOthers, ChoseCategory, Question } from '../../components';
 import { updateRoom } from '../../redux/modules/room';
 
 @connect(
@@ -20,8 +20,14 @@ export default class Room extends Component {
     updateRoom: PropTypes.func.isRequired,
   }
 
-  componentWillMount() {
+  componentDidMount() {
+  // componentWillMount() {
     this.props.socket.on('start game', (data) => {
+      this.props.updateRoom(data);
+    });
+    this.props.socket.on('room update', (data) => {
+      console.log('=========UPDATE----------');
+      console.log(data);
       this.props.updateRoom(data);
     });
   }
@@ -32,11 +38,17 @@ export default class Room extends Component {
 
   startGame = () => {
     const { socket, params } = this.props;
+    console.log('starting');
     socket.emit('start game', params.roomId);
   }
 
   render() {
     const { params, socket, room } = this.props;
+    // const chooseCategory = room.round.length === 0 && room.round[room.round.length -1].question;
+    const categoryChoosing = room.round.length === 0 || !room.round[room.round.length -1].question;
+    // const
+    console.log('chose category?????');
+    console.log(categoryChoosing);
     return (
       <div>
         <Helmet title={`room: ${params.roomId}`} />
@@ -45,7 +57,12 @@ export default class Room extends Component {
         )}
         {room.playing && (
           <div>
-            <ChoseCategory socket={socket} />
+            {categoryChoosing && (
+              <ChoseCategory socket={socket} />
+            )}
+            {!categoryChoosing && (
+              <Question socket={socket} />
+            )}
           </div>
         )}
       </div>

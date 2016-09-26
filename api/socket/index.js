@@ -9,6 +9,7 @@ const _ = require('lodash');
 // console.log(question.getRandomCategory());
 
 module.exports = function(io) {
+  // socket.id
 //   // sending to sender-client only
 // socket.emit('message', "this is a test");
 //
@@ -39,16 +40,8 @@ module.exports = function(io) {
     });
 
     socket.on('create room', (room) => {
-      rooms.push({
-        name: room,
-        players: [],
-        ready: [],
-        playing: false,
-        starting: false,
-        round: [],
-      });
-      socket.broadcast.emit('new room', rooms);
-      // socket.emit('new room', rooms);
+      rooms.createRoom(room);
+      socket.broadcast.emit('new room', rooms.getRooms());
     });
 
     socket.on('join room', (channelID, userName) => {
@@ -56,16 +49,14 @@ module.exports = function(io) {
       const uid = _.findIndex(users, (o) => {
         return o.name === userName;
       });
-      const rid = _.findIndex(rooms, (o) => {
-        return o.name === channelID;
-      });
-      if (uid !== -1 && rid !== -1) {
-        rooms[rid].players.push({ name: userName });
+      const room = rooms.getRoomByName(channelID);
+
+      if (uid !== -1 && room) {
+        room.setPlayer(userName);
         users[uid].room = channelID;
         socket.join(channelID);
-        socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
+        socket.broadcast.to(channelID).emit('wait for others update', room.getProperty());
       }
-      // socket.broadcast.emit('player join' )
     });
     socket.on('leave room', (channelID, user) => {
 
@@ -73,18 +64,13 @@ module.exports = function(io) {
 
 
     socket.on('ready to play', channelID => {
-      const rid = _.findIndex(rooms, (o) => {
-        return o.name === channelID;
-      });
-      if (rid !== -1) {
-        rooms[rid].starting = true;
-        socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
+      const room = rooms.getRoomByName(channelID);
+      if (room) {
+        room.setStart(true);
+        socket.broadcast.to(channelID).emit('wait for others update', room.getProperty());
         setTimeout(() => {
-          console.log('TIMEOUT ended');
-          rooms[rid].playing = true;
-          // socket.broadcast.to(channelID).emit('start game', rooms[rid]);
-          io.in(channelID).emit('start game', rooms[rid]);
-          // io.broadcast.to(channelID).emit('start game', rooms[rid]);
+          room.setPlay(true);
+          io.in(channelID).emit('start game', room.getProperty());
         }, 1000);
       }
     });
@@ -103,26 +89,29 @@ module.exports = function(io) {
       io.in(channelID).emit('choose category update', randomQuestion);
     });
 
+    socket.on('category choosed', (channelID, category) => {
+      const room = rooms.getRoomByName(channelID);
+      if (room) {
+        room.pushRound({
+          question: question.getRandomQuestion(category),
+          time: Math.floor(Date.now() / 1000),
+        });
+        io.in(channelID).emit('room update', room.getProperty());
+      }
+    });
+
     socket.on('join channel', (channel) => {
       socket.join(channel.name);
     });
 
     socket.on('player ready', (name, channelID) => {
-      const rid = _.findIndex(rooms, (o) => {
-        return o.name === channelID;
-      });
-
-      if (rid !== -1) {
-        rooms[rid].ready.push(name);
-        const idx = _.findIndex(rooms[rid].players, (o) => o.name === name );
-        rooms[rid].players[idx].ready = true;
+      const room = rooms.getRoomByName(channelID);
+      if (room) {
+        room.setPlayersReady(name);
         socket.join(channelID);
-        socket.broadcast.to(channelID).emit('wait for others update', rooms[rid]);
+        socket.broadcast.to(channelID).emit('wait for others update', room.getProperty());
       }
     });
-    // socket.on('new player ready', )
-
-    // socket.emit('news', {msg: `'Hello World!' from server`});
 
     socket.on('history', () => {
       for (let index = 0; index < bufferSize; index++) {
@@ -135,6 +124,7 @@ module.exports = function(io) {
     });
 
     socket.on('msg', (data) => {
+      console.log(socket.id);
       // data.id = messageIndex;
       // messageBuffer[messageIndex % bufferSize] = data;
       // messageIndex++;

@@ -12,19 +12,16 @@ const isAuthenticated = require('../utils/isAuthenticated');
 router.get('/', isAuthenticated, (req, res) => {
   res.status(200).json({
     status: 'ok',
-    data: rooms,
+    data: rooms.getRooms(),
   })
 });
 
 router.get('/id/:id', isAuthenticated, (req, res) => {
-  console.log('call id');
-  const idx = _.findIndex(rooms, (o) => {
-    return o.name === req.params.id;
-  });
-  if (idx !== -1) {
+  const room = rooms.getRoomByName(req.params.id);
+  if (room) {
     return res.status(200).json({
       status: 'ok',
-      data: rooms[idx],
+      data: room.getProperty(),
     });
   }
   return res.status(404).json({
@@ -34,19 +31,14 @@ router.get('/id/:id', isAuthenticated, (req, res) => {
 
 router.post('/', isAuthenticated, (req, res) => {
   const room = req.body.name;
-  const error = validate(room, 'room name').isRequired().isString().unique(rooms, 'name').exec();
+  const error = validate(room, 'room name').isRequired().isString().unique(rooms.getRooms(), 'name').exec();
   if (error) {
     return res.status(400).json({error: error});
   }
-  rooms.push({
-    name: room,
-    players: [],
-    ready: [],
-  });
-  console.log(rooms);
+  const newRoom = rooms.createRoom(room).getProperty();
   res.status(200).json({
     status: 'ok',
-    data: rooms,
+    data: newRoom,
   });
 });
 

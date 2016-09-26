@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import api from '../../api';
 import validate from '../../../utils/validation';
 import { push } from 'react-router-redux';
-import { roomInfo } from '../../redux/modules/room';
+// import { roomInfo } from '../../redux/modules/room';
 import { Link } from 'react-router';
 
 @connect(
@@ -13,12 +13,13 @@ import { Link } from 'react-router';
     user: state.auth.user.name,
     // room:
   }),
-  { roomInfo, pushState: push })
+  // { roomInfo, pushState: push })
+  { pushState: push })
 export default class Rooms extends Component {
   static propTypes = {
     socket: PropTypes.object.isRequired,
     user: PropTypes.string.isRequired,
-    roomInfo: PropTypes.func.isRequired,
+    // roomInfo: PropTypes.func.isRequired,
     pushState: PropTypes.func.isRequired,
   }
 
@@ -30,8 +31,8 @@ export default class Rooms extends Component {
       error: undefined,
     };
   }
-
-  componentWillMount() {
+  componentDidMount() {
+  // componentWillMount() {
     this.getRooms();
     const { socket } = this.props;
     socket.on('new room', (rooms) => {
