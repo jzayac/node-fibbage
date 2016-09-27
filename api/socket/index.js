@@ -5,9 +5,6 @@ const rooms = require('../model/room');
 const question = require('../model/question');
 const _ = require('lodash');
 
-// console.log(question.getRandomQuestion());
-// console.log(question.getRandomCategory());
-
 module.exports = function(io) {
   // socket.id
 //   // sending to sender-client only
@@ -50,7 +47,6 @@ module.exports = function(io) {
         return o.name === userName;
       });
       const room = rooms.getRoomByName(channelID);
-
       if (uid !== -1 && room) {
         room.setPlayer(userName);
         users[uid].room = channelID;
@@ -58,6 +54,7 @@ module.exports = function(io) {
         socket.broadcast.to(channelID).emit('wait for others update', room.getProperty());
       }
     });
+
     socket.on('leave room', (channelID, user) => {
 
     });
@@ -75,14 +72,8 @@ module.exports = function(io) {
       }
     });
     socket.on('get store', () => {
-      console.log(users);
       socket.emit('data', users);
     });
-
-    // socket.on('get question category', () => {
-    //   const randomCategory = question.getRandomCategory(10);
-    //   socket.emit('choose category update', randomCategory);
-    // });
 
     socket.on('get question', (channelID, category, type ) => {
       const randomQuestion = question.getRandomQuestion(category, type);
@@ -92,10 +83,15 @@ module.exports = function(io) {
     socket.on('category choosed', (channelID, category) => {
       const room = rooms.getRoomByName(channelID);
       if (room) {
-        room.pushRound({
-          question: question.getRandomQuestion(category),
-          time: Math.floor(Date.now() / 1000),
-        });
+        room.setQuestion(question.getRandomQuestion(category));
+        console.log('=========');
+        console.log(room.getProperty());
+        console.log('=========');
+        // room.pushRound({
+        //   question: question.getRandomQuestion(category),
+        //   time: Math.floor(Date.now() / 1000),
+        //   elapsedTime:
+        // });
         io.in(channelID).emit('room update', room.getProperty());
       }
     });
@@ -113,23 +109,6 @@ module.exports = function(io) {
       }
     });
 
-    socket.on('history', () => {
-      for (let index = 0; index < bufferSize; index++) {
-        const msgNo = (messageIndex + index) % bufferSize;
-        const msg = messageBuffer[msgNo];
-        if (msg) {
-          socket.emit('msg', msg);
-        }
-      }
-    });
-
-    socket.on('msg', (data) => {
-      console.log(socket.id);
-      // data.id = messageIndex;
-      // messageBuffer[messageIndex % bufferSize] = data;
-      // messageIndex++;
-      socket.emit('msg', data);
-    });
     socket.on('disconnect', function() {
       // delete user[socket.id];
     });

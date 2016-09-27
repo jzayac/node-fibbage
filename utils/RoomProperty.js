@@ -1,5 +1,9 @@
 const _ = require('lodash');
 
+function remainingTime (time) {
+
+}
+
 function RoomProperty(roomProps) {
   this.room = roomProps;
 }
@@ -31,6 +35,14 @@ RoomProperty.prototype.setPlayer = function(playerName) {
   });
 }
 
+RoomProperty.prototype.setQuestion = function(question) {
+  this.room.round.push({
+    question: question,
+    time: Math.floor(Date.now() / 1000),
+    remainingTime: 35,
+  });
+}
+
 RoomProperty.prototype.setPlay = function(play) {
   this.room.playing = play;
 }
@@ -53,5 +65,9 @@ RoomProperty.prototype.updateRoom = function(room) {
 RoomProperty.prototype.isStarting = function() {
   return this.room.starting;
 }
+
+// RoomProperty.prototype.remainingTime = function() {
+//   const time = this.room.round.length && this.room.round[this.room.round.legnth -1].time
+// }
 
 module.exports = RoomProperty;

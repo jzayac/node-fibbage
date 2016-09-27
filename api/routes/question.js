@@ -16,7 +16,6 @@ router.get('/category', isAuthenticated, (req, res) => {
 });
 
 router.get('/category/:type', isAuthenticated, (req, res) => {
-  // console.log(req.params.type);
   const randomCategory = question.getRandomCategory(10, req.params.type);
   res.status(200).json({
     status: 'ok',

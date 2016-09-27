@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Button, Alert } from 'react-bootstrap';
 import styles from './LoginForm.css';
 import { connect } from 'react-redux';
-// import { push } from 'react-router-redux';
 import * as authActions from '../../redux/modules/auth';
 import { Link } from 'react-router';
 
@@ -12,34 +11,21 @@ import { Link } from 'react-router';
     loginError: state.auth.loginError,
     loggingIn: state.auth.loggingIn,
   }),
-  // { login: authActions.login, pushState: push })
   authActions)
 export default class LoginForm extends Component {
   static propTypes = {
     user: PropTypes.object,
     login: PropTypes.func.isRequired,
     loginError: PropTypes.array,
-    // pushState: PropTypes.func.isRequired,
-    // authDismissError: PropTypes.func,
-    // loggingIn: PropTypes.bool,
   }
   handleUserLogin = () => {
     const user = this.refs.nick;
     this.props.login(user.value);
-  //   this.props.login(user.value).then((data, error) => {
-  //     if (!error) {
-  //       this.props.pushState('/board');
-  //     }
-  //   });
-  //   user.value = '';
   }
 
   render() {
     const { user, loginError } = this.props;
-    // console.log(this);
     if (user) {
-      // TODO redirect
-      // Route.browserHistory.push('/somepath');
       return (
         <div>
           <h4>hello {user.name}</h4>

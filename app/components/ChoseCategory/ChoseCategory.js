@@ -38,8 +38,6 @@ export default class ChoseCategory extends Component {
       // socket.emit('get question category');
     }
     // socket.on('choose category update', (data) => {
-    //   console.log('chose CATEGORY');
-    //   console.log(data);
     // });
     // socket.on('choose category update', (update) => {
     //

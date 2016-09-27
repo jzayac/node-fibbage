@@ -42,10 +42,6 @@ router.get('/loadauth', (req, res) => {
       return o.name === req.session.user.name;
     });
     console.log('not empty');
-    // console.log(req.session.user);
-    // console.log(uid);
-    // console.log(users);
-    // console.log(users[uid]);
     return res.status(200).json({
       data: users[uid],
     });

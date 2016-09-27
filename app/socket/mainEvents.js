@@ -1,4 +1,3 @@
-// import * as channelActions from '../redux/modules/channel';
 
 export default (io) => {
   io.on('news', (data) => {
@@ -13,9 +12,4 @@ export default (io) => {
     console.error('SOCKET error :' + error);
   });
 
-  // io.on('join channel', (channel) => {
-  //   io.join(channel.name);
-  // });
-
-  // io.emit('user/login', { user: 'name' });
 };
